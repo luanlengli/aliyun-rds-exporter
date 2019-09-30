@@ -16,7 +16,7 @@ export TAG=v0.01
 # Build Docker Image
 
 ```shell
-docker build -t IMAGE_NAME:TAG .
+docker build -t ${IMAGE_NAME}:${TAG} .
 ```
 
 # Edit configuration file
@@ -53,7 +53,7 @@ docker run -d \
            --restart=on-failure:5 \
            -p 5234:5234 \
            -v config/config.yaml:/opt/aliyun-rds-exporter/config/config.yaml \
-           IMAGE_NAME:TAG 
+           ${IMAGE_NAME}:${TAG}
 ```
 
 - Qurey metrics data
@@ -115,7 +115,7 @@ aliyun_rds_resource_usage_DiskUsed{Engine="MySQL",instanceId="rm-xxxxxxxxxxxxxxx
 
 ## Aliyun RDS Status Metrics
 
-> This metrics value always to be `1.0`.
+> The metrics value will always be a float number `1.0`.
 >
 > Just for label RDS instance status!
 
@@ -124,4 +124,3 @@ aliyun_rds_resource_usage_DiskUsed{Engine="MySQL",instanceId="rm-xxxxxxxxxxxxxxx
 # TYPE aliyun_rds_status gauge
 aliyun_rds_status{CreateTime="2019-01-01T08:00:00Z",DBInstanceId="rm-xxxxxxxxxxxxxxxxx",DBInstanceStatus="Running",DBInstanceType="Primary",Engine="MySQL",EngineVersion="5.7",ExpireTime="2020-01-01T16:00:00Z",LockMode="Unlock",PayType="Prepaid",RegionId="cn-shenzhen"} 1.0
 ```
-
