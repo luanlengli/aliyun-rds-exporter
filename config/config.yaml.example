@@ -78,7 +78,47 @@ performance_list:
   # 只读实例延迟。
   # Read-only instance delay
   - 'slavestat'
-  # SQLServer not avaliable
-  SQLServer: []
-  # PostgreSQL not avaliable
-  PostgreSQL: []
+  # SQLServer has no tested
+  SQLServer:
+  # 平均每秒事务数。
+  - SQLServer_Transactions
+  # 当前总连接数。
+  - SQLServer_Sessions
+  # 缓存命中率。
+  - SQLServer_BufferHit
+  # 平均每秒全表扫描次数。
+  - SQLServer_FullScans
+  # 每秒SQL编译。
+  - SQLServer_SQLCompilations
+  # 每秒检查点写入Page数。
+  - SQLServer_CheckPoint
+  # 每秒登录次数。
+  - SQLServer_Logins
+  # 每秒锁超时次数。
+  - SQLServer_LockTimeout
+  # 每秒死锁次数。
+  - SQLServer_Deadlock
+  # 每秒锁等待次数。
+  - SQLServer_LockWaits
+  # SQLServer实例平均每秒钟的输入/输出流量，单位为KB。
+  - SQLServer_NetworkTraffic
+  # 平均每秒SQL语句执行次数
+  - SQLServer_QPS
+  # MSSQL实例CPU使用率(占操作系统总数)。
+  - SQLServer_InstanceCPUUsage
+  # MSSQL实例的IOPS（每秒IO请求次数）。
+  - SQLServer_IOPS
+  # MSSQL实例空间占用。
+  - SQLServer_SpaceUsage
+  # PostgreSQL has no tested
+  PostgreSQL:
+  # 内存利用率。
+  - MemoryUsage
+  # CPU利用率。
+  - CpuUsage
+  # 实例空间占用。
+  - PgSQL_SpaceUsage
+  # IOPS（每秒IO请求次数）。
+  - PgSQL_IOPS
+  # 当前总连接数。
+  - PgSQL_Session

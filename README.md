@@ -30,6 +30,8 @@ cp config/config.yaml.example config/config.yaml
 - Config your credential and interested metrics
 
   > Visit [here](https://www.alibabacloud.com/help/doc-detail/26316.htm?spm=a2c63.p38356.b99.764.1d5b6457y4HDHR) for more metrics informations!
+  >
+  > for Chinese Version visit [here](https://help.aliyun.com/document_detail/26316.html?spm=a2c1g.8271268.0.0.2e90df25B78c0i)!
 
 ```yaml
 credential:
