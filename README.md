@@ -6,6 +6,8 @@ A prometheus exporter for Aliyun RDS Instance.
 
 <font color='red'>Do not use for production!</font>
 
+<font color='red'>Only RDS for MySQL has tested!</font>
+
 # Set Environment for Docker build 
 
 ```shell
