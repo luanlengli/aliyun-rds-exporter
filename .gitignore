@@ -10,7 +10,6 @@ build
 __pycache__
 .mypy_cache
 venv
-.git
 .vscode
 demo.py
 logs
