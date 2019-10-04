@@ -79,20 +79,20 @@ class AliyunRDSCollector(object):
             except Exception as e:
                 logging.error('Error request Aliyun api', exc_info=e)
                 api_request_failed_summry.labels(api='DescribeDBInstancesRequest').observe(
-                    amount=(datetime.datetime.now().timestamp() - now))
+                    amount=(datetime.datetime.now().timestamp() - now)
+                )
                 return []
             if response['PageRecordCount'] == 0:
                 break
             DBInstance_list = response['Items']['DBInstance']
-            for i in range(len(DBInstance_list)):
-                rds = DBInstance_list[i]
-                rds_instance_list.append(rds)
+            rds_instance_list.extend(DBInstance_list)
             page_num += 1
         logging.debug("size of rds_instance_list = {}".format(sys.getsizeof(rds_instance_list)))
         return rds_instance_list
 
     @cached(cache=TTLCache(maxsize=4096, ttl=20))
     def query_rds_performance_data_list(self):
+    # 调用阿里云API请求RDS实例的性能数据
         now = datetime.datetime.now()
         rds_performance_data_list = list(self.aliyun_client_do_action_response_list())
         logging.debug("rds_performance_data_list used time = {}".format(datetime.datetime.now() - now))
@@ -137,6 +137,7 @@ class AliyunRDSCollector(object):
             return []
 
     def aliyun_client_do_action_response_list(self):
+    # 通过线程池并行调用阿里云API
         request_list = self.query_rds_performance_data_job_list_generator()
         with futures.ThreadPoolExecutor(50) as executor:
             response = executor.map(self.aliyun_client_do_action, request_list)

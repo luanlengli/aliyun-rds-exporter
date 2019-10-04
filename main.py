@@ -11,10 +11,13 @@ from tools import get_args, get_file_opts
 
 
 def main():
-    # 设置logging日志级别
-    logging.getLogger().setLevel(logging.INFO)
     # 获取命令行参数
     command_args = get_args()
+    # 设置logging日志级别
+    if command_args['debug'] == True:
+        logging.getLogger().setLevel(logging.DEBUG)
+    else:
+        logging.getLogger().setLevel(logging.INFO)
     # 获取配置文件参数
     file_opts = get_file_opts(command_args)
     # 实例化配置

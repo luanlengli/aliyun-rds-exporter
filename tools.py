@@ -13,6 +13,12 @@ def get_args():
         default='config/config.yaml',
         help='Path to config file',
     )
+    parser.add_argument(
+        '-d',
+        '--debug',
+        action='store_true',
+        help='print debug messages'
+    )
     return parser.parse_args().__dict__
 
 def get_file_opts(args):
