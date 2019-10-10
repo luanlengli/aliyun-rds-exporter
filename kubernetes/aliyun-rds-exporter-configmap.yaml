@@ -1,0 +1,131 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aliyun-rds-exporter-configmap
+  namespace: monitoring
+data:
+  config.yaml: |-
+    server:
+      host: "0.0.0.0"
+      port: 5234
+    # aliyun key_id and key_secret
+    credential:
+      access_key_id: "<Aliyun Access Key ID>"
+      access_key_secret: "<Aliyun Access Key Secret>"
+      region_id: "<Aliyun Region>"
+    # Please visit the url for more information!
+    # https://www.alibabacloud.com/help/doc-detail/26316.htm?spm=a2c63.p38356.b99.764.1d5b6457y4HDHR
+    # 中文版性能参数表
+    # https://help.aliyun.com/document_detail/26316.html?spm=a2c1g.8271268.0.0.2e90df25B78c0i
+    performance_list:
+      MySQL:
+      # MySQL实例平均每秒钟的输入流量，MySQL实例平均每秒钟的输出流量。单位为KB。
+      # Average inbound traffic to a MySQL instance per second and average outbound traffic from a MySQL instance per second. Unit: KB. 
+      - 'MySQL_NetworkTraffic'
+      # 平均每秒SQL语句执行次数，平均每秒事务数。
+      #  Average number of SQL statement execution times per second and average number of transactions per second 
+      - 'MySQL_QPSTPS'
+      # 当前活跃连接数，当前总连接数。
+      # Number of currently active connections and total number of current connections
+      - 'MySQL_Sessions'
+      # InnoDB缓冲池的读命中率，InnoDB缓冲池的利用率，InnoDB缓冲池脏块的百分率。
+      # Read hit rate of the InnoDB buffer pool, utilization rate of the InnoDB buffer pool, and percentage of dirty data blocks in the InnoDB buffer pool 
+      - 'MySQL_InnoDBBufferRatio'
+      # InnoDB平均每秒钟读取的数据量，InnoDB平均每秒钟写入的数据量。单位为KB。
+      # InnoDB average volume of data reads per second and InnoDB average volume of data writes per second. Unit: KB 
+      - 'MySQL_InnoDBDataReadWriten'
+      # 平均每秒向InnoDB缓冲池的读次数，平均每秒向InnoDB缓冲池的写次数。
+      # Average times of reading data from the InnoDB buffer pool per second and average times of writing data to the InnoDB buffer pool per second 
+      - 'MySQL_InnoDBLogRequests'
+      # 平均每秒日志写请求数，平均每秒向日志文件的物理写次数，平均每秒向日志文件完成的fsync()写数量。
+      # Average number of log write requests per second, Average number of physical writes performed on log files per second,
+      # and average number of fsync() writes completed on log files per second 
+      - 'MySQL_InnoDBLogWrites'
+      # MySQL执行语句时在硬盘上自动创建的临时表的数量。
+      # Number of temporary tables automatically created in the hard drive during MySQL statement execution 
+      - 'MySQL_TempDiskTableCreates'
+      # MyISAM平均每秒Key Buffer利用率，MyISAM平均每秒Key Buffer读命中率，MyISAM平均每秒Key Buffer写命中率。
+      # Average Key Buffer utilization rate of MyISAM per second,
+      # average Key Buffer read hit rate of MyISAM per second,
+      # and average Key Buffer write hit rate of MyISAM per second 
+      - 'MySQL_MyISAMKeyBufferRatio'
+      # MyISAM平均每秒钟从缓冲池中的读取次数，MyISAM平均每秒钟从缓冲池中的写入次数，MyISAM平均每秒钟从硬盘上读取的次数，MyISAM平均每秒钟从硬盘上写入的次数
+      # Average times of reading data from the buffer pool by MyISAM per second,
+      # average times of writing data to the buffer pool by MyISAM per second,
+      # average times of reading data from the hard disk by MyISAM per second,
+      # and average times of writing data to the hard disk by MyISAM per second 
+      - 'MySQL_MyISAMKeyReadWrites'
+      # 平均每秒Delete语句执行次数，平均每秒Insert语句执行次数，平均每秒Insert_Select语句执行次数，平均每秒Replace语句执行次数，
+      # 平均每秒Replace_Select语句执行次数，平均每秒Select语句执行次数，平均每秒Update语句执行次数。
+      # Average times of DELETE statement execution per second, average times of INSERT statement execution per second,
+      # average times of INSERT_SELECT statement execution per second, average times of REPLACE statement execution per second,
+      # average times of REPLACE_SELECT statement execution per second, average times of SELECT statement execution per second,
+      # and average times of UPDATE statement execution per second 
+      - 'MySQL_COMDML'
+      # 平均每秒从InnoDB表读取的行数，平均每秒从InnoDB表更新的行数，平均每秒从InnoDB表删除的行数，平均每秒从InnoDB表插入的行数，平均每秒向日志文件的物理写次数
+      # Average number of rows read from the InnoDB table per second, average number of rows updated in the InnoDB table per second,
+      # average number of rows deleted from the InnoDB table per second, average number of rows inserted into the InnoDB table per second,
+      # and average number of physical writes performed on log files per second 
+      - 'MySQL_RowDML'
+      # MySQL实例CPU使用率(占操作系统总数)，MySQL实例内存使用率(占操作系统总数)。
+      # CPU usage by a MySQL instance (expressed as a percentage of the operating system’s CPU) 
+      # and memory usage by a MySQL instance (expressed as a percentage of the operating system’s memory) 
+      - 'MySQL_MemCpuUsage'
+      # MySQL实例的IOPS（每秒IO请求次数）。
+      # IOPS (I/O requests per second) of a MySQL instance
+      - 'MySQL_IOPS'
+      # MySQL实例空间占用详情：ins_size实例总空间使用量;data_size数据空间;log_size日志空间;tmp_size临时空间;other_size系统空间。
+      #Space usage by a MySQL instance: total space usage by the ins_size instance + data_size data space + log_size log space + tmp_size temporary space + other_size system space 
+      - 'MySQL_DetailedSpaceUsage'
+      # MySQL实例每秒连接数。
+      # Number of connections per second
+      - 'MySQL_CPS'
+      # 只读实例延迟。
+      # Read-only instance delay
+      - 'slavestat'
+      # SQLServer has no tested
+      SQLServer:
+      # 平均每秒事务数。
+      - SQLServer_Transactions
+      # 当前总连接数。
+      - SQLServer_Sessions
+      # 缓存命中率。
+      - SQLServer_BufferHit
+      # 平均每秒全表扫描次数。
+      - SQLServer_FullScans
+      # 每秒SQL编译。
+      - SQLServer_SQLCompilations
+      # 每秒检查点写入Page数。
+      - SQLServer_CheckPoint
+      # 每秒登录次数。
+      - SQLServer_Logins
+      # 每秒锁超时次数。
+      - SQLServer_LockTimeout
+      # 每秒死锁次数。
+      - SQLServer_Deadlock
+      # 每秒锁等待次数。
+      - SQLServer_LockWaits
+      # SQLServer实例平均每秒钟的输入/输出流量，单位为KB。
+      - SQLServer_NetworkTraffic
+      # 平均每秒SQL语句执行次数
+      - SQLServer_QPS
+      # MSSQL实例CPU使用率(占操作系统总数)。
+      - SQLServer_InstanceCPUUsage
+      # MSSQL实例的IOPS（每秒IO请求次数）。
+      - SQLServer_IOPS
+      # MSSQL实例空间占用。
+      - SQLServer_SpaceUsage
+      # PostgreSQL has no tested
+      PostgreSQL:
+      # 内存利用率。
+      - MemoryUsage
+      # CPU利用率。
+      - CpuUsage
+      # 实例空间占用。
+      - PgSQL_SpaceUsage
+      # IOPS（每秒IO请求次数）。
+      - PgSQL_IOPS
+      # 当前总连接数。
+      - PgSQL_Session
+---

@@ -128,3 +128,34 @@ aliyun_rds_resource_usage_DiskUsed{Engine="MySQL",instanceId="rm-xxxxxxxxxxxxxxx
 # TYPE aliyun_rds_status gauge
 aliyun_rds_status{CreateTime="2019-01-01T08:00:00Z",DBInstanceId="rm-xxxxxxxxxxxxxxxxx",DBInstanceStatus="Running",DBInstanceType="Primary",Engine="MySQL",EngineVersion="5.7",ExpireTime="2020-01-01T16:00:00Z",LockMode="Unlock",PayType="Prepaid",RegionId="cn-shenzhen"} 1.0
 ```
+
+# Run in kubernetes
+
+## edit YAML file
+
+- edit `kubernetes/aliyun-rds-exporter-configmap.yaml`
+- Config your credential and interested metrics
+
+```yaml
+    # aliyun key_id and key_secret
+    credential:
+      access_key_id: "<Aliyun Access Key ID>"
+      access_key_secret: "<Aliyun Access Key Secret>"
+      region_id: "<Aliyun Region>"
+```
+
+## deploy
+
+```shell
+kubectl apply -f kubernetes/
+```
+
+# Grafana Dashboard
+
+## import dashboard
+
+JSON panel code locate in `grafana/grafana-dashboard.json`
+
+## screen
+
+![grafana-dashboard-demo](./grafana/grafana-dashboard-demo.png)

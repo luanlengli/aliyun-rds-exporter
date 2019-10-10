@@ -1,0 +1,73 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: aliyun-rds-exporter
+  name: aliyun-rds-exporter-deployment
+  namespace: monitoring
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: aliyun-rds-exporter
+  template:
+    metadata:
+      labels:
+        app: aliyun-rds-exporter
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: aliyun-rds-exporter
+        image: aliyun-rds-exporter:v0.0.1
+        imagePullPolicy: IfNotPresent
+        command:
+        - "python"
+        - "main.py"
+        - "-c"
+        - "/opt/aliyun-rds-exporter/config/config.yaml"
+        # - "--debug"
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /metrics
+            port: 5234
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        ports:
+        - name: http
+          containerPort: 5234
+          protocol: TCP
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            memory: 200Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        workingDir: /opt/aliyun-rds-exporter
+        volumeMounts:
+        - name: timezone-volume
+          mountPath: /etc/localtime
+          readOnly: true
+        - name: config-volume
+          mountPath: /opt/aliyun-rds-exporter/config/config.yaml
+          subPath: config.yaml
+      dnsPolicy: Default
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: timezone-volume
+        hostPath:
+          path: /usr/share/zoneinfo/Asia/Shanghai
+      - name: config-volume
+        configMap:
+          name: aliyun-rds-exporter-configmap
+---

@@ -6,7 +6,7 @@ from prometheus_client.core import REGISTRY
 from prometheus_client import make_wsgi_app
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from wsgiref.simple_server import make_server
-from module.collecter import CollectorConfig, AliyunRDSCollector
+from module.collector import CollectorConfig, AliyunRDSCollector
 from tools import get_args, get_file_opts
 
 

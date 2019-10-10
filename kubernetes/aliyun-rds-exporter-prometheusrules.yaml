@@ -1,0 +1,14 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: aliyun-rds-exporter
+    role: alert-rules
+  name: aliyun-rds-exporter-prometheusrules
+  namespace: monitoring
+spec:
+  groups:
+  - name: aliyun-rds-exporter.rules
+    rules: []
+---

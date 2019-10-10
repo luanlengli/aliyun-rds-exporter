@@ -1,0 +1,1265 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": "-- Grafana --",
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "gnetId": null,
+    "graphTooltip": 0,
+    "id": 1,
+    "iteration": 1570525134043,
+    "links": [],
+    "panels": [
+      {
+        "columns": [],
+        "fontSize": "100%",
+        "gridPos": {
+          "h": 4,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 27,
+        "options": {},
+        "pageSize": null,
+        "scroll": true,
+        "showHeader": true,
+        "sort": {
+          "col": 1,  
+          "desc": false
+        },
+        "styles": [
+          {
+            "alias": "Time",
+            "dateFormat": "YYYY-MM-DD HH:mm:ss",
+            "pattern": "Time",
+            "type": "hidden"
+          },
+          {
+            "alias": "",
+            "colorMode": null,
+            "colors": [
+              "rgba(245, 54, 54, 0.9)",
+              "rgba(237, 129, 40, 0.89)",
+              "rgba(50, 172, 45, 0.97)"
+            ],
+            "decimals": 2,
+            "pattern": "Value",
+            "thresholds": [],
+            "type": "hidden",
+            "unit": "short"
+          }
+        ],
+        "targets": [
+          {
+            "expr": "count by (LockMode, Engine, ExpireTime, CreateTime, DBInstanceType, RegionId, EngineVersion, DBInstanceStatus, PayType, DBInstanceId, DBInstanceDescription) (aliyun_rds_status)",
+            "format": "table",
+            "instant": true,
+            "intervalFactor": 1,
+            "refId": "A"
+          }
+        ],
+        "timeFrom": null,
+        "timeShift": null,
+        "title": "阿里云RDS实例状态信息",
+        "transform": "table",
+        "type": "table"
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "fill": 1,
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 0,
+          "y": 8
+        },
+        "id": 6,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {},
+        "percentage": false,
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "expr": "aliyun_rds_performance_MySQL_MemCpuUsage_cpuusage{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} CPU使用率",
+            "refId": "A"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_MemCpuUsage_memusage{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 内存使用率",
+            "refId": "B"
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "CPU和内存利用率(%)",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "percent",
+            "label": "",
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "fill": 1,
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 6,
+          "y": 8
+        },
+        "id": 12,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {},
+        "percentage": false,
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "expr": "aliyun_rds_performance_MySQL_Sessions_active_session{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 当前活跃连接数",
+            "refId": "A"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_Sessions_total_session{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 当前总连接数",
+            "refId": "B"
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "当前连接数",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "decimals": null,
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "fill": 1,
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 12,
+          "y": 8
+        },
+        "id": 14,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {},
+        "percentage": false,
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "expr": "aliyun_rds_performance_MySQL_NetworkTraffic_recv_k{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 平均每秒输入流量",
+            "refId": "A"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_NetworkTraffic_sent_k{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 平均每秒发出流量",
+            "refId": "B"
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "网络流量（单位KB)",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "deckbytes",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "fill": 1,
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 18,
+          "y": 8
+        },
+        "id": 10,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {},
+        "percentage": false,
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "expr": "aliyun_rds_performance_MySQL_IOPS_io{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} IOPS",
+            "refId": "A"
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "IOPS（单位:次/秒）",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "fill": 1,
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 0,
+          "y": 12
+        },
+        "id": 8,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {},
+        "percentage": false,
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "expr": "aliyun_rds_resource_usage_DiskUsed{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 已用空间（DataSize+LogSize）",
+            "refId": "A"
+          },
+          {
+            "expr": "aliyun_rds_resource_usage_DataSize{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 数据文件占用空间",
+            "refId": "B"
+          },
+          {
+            "expr": "aliyun_rds_resource_usage_LogSize{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 日志占用空间",
+            "refId": "C"
+          },
+          {
+            "expr": "aliyun_rds_resource_usage_SQLSize{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} SQL的存储量",
+            "refId": "D"
+          },
+          {
+            "refId": "E",
+            "expr": "aliyun_rds_resource_usage_BackupSize{instanceId=~\"$DBInstanceId\"}",
+            "intervalFactor": 1,
+            "format": "time_series",
+            "legendFormat": "{{ instanceId }} 备份占用空间"
+          },
+          {
+            "refId": "F",
+            "expr": "aliyun_rds_resource_usage_BackupOssDataSize{instanceId=~\"$DBInstanceId\"}",
+            "intervalFactor": 1,
+            "format": "time_series",
+            "legendFormat": "{{ instanceId }} OSS中备份集的数据文件大小"
+          },
+          {
+            "refId": "G",
+            "expr": "aliyun_rds_resource_usage_BackupOssLogSize{instanceId=~\"$DBInstanceId\"}",
+            "intervalFactor": 1,
+            "format": "time_series",
+            "legendFormat": "{{ instanceId }} OSS中备份集的日志文件大小"
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "磁盘空间",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "decbytes",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "fill": 1,
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 6,
+          "y": 16
+        },
+        "id": 16,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {},
+        "percentage": false,
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "expr": "aliyun_rds_performance_MySQL_QPSTPS_QPS{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} QPS(平均每秒SQL语句执行次数)",
+            "refId": "A"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_QPSTPS_TPS{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} TPS(平均每秒事务数）",
+            "refId": "B"
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "TPS(平均每秒事务数）/QPS(平均每秒SQL语句执行次数)",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "fill": 1,
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 12,
+          "y": 16
+        },
+        "id": 18,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {},
+        "percentage": false,
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "expr": "aliyun_rds_performance_MySQL_InnoDBBufferRatio_ibuf_read_hit{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 缓冲池读命中率%",
+            "refId": "A"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_InnoDBBufferRatio_ibuf_use_ratio{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 缓冲池利用率%",
+            "refId": "B"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_InnoDBBufferRatio_ibuf_dirty_ratio{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 缓冲池脏块百分比%",
+            "refId": "C"
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "InnoDB缓存读命中率、使用率、脏块率(%)",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "percent",
+            "label": null,
+            "logBase": 1,
+            "max": "100",
+            "min": "0",
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "fill": 1,
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 18,
+          "y": 16
+        },
+        "id": 20,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {},
+        "percentage": false,
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "expr": "aliyun_rds_performance_MySQL_InnoDBDataReadWriten_inno_data_read{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} InnoDB平均每秒读取数据量(KB)",
+            "refId": "A"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_InnoDBDataReadWriten_inno_data_written{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} InnoDB平均每秒写入数据量(KB)",
+            "refId": "B"
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "InnoDB读写量（单位为KB）",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "KBs",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "fill": 1,
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 0,
+          "y": 24
+        },
+        "id": 22,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {},
+        "percentage": false,
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "expr": "aliyun_rds_performance_MySQL_InnoDBLogWrites_Innodb_log_write_requests{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 平均每秒日志写请求数",
+            "refId": "A"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_InnoDBLogWrites_Innodb_log_writes{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 平均每秒向日志文件物理写次数",
+            "refId": "B"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_InnoDBLogWrites_Innodb_os_log_fsyncs{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 平均每秒向日志文件完成fsync写次数",
+            "refId": "C"
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "InnoDB日志读/写/fsync",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "fill": 1,
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 6,
+          "y": 24
+        },
+        "id": 24,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {},
+        "percentage": false,
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "expr": "aliyun_rds_performance_MySQL_COMDML_com_delete{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 平均每秒delete语句执行次数",
+            "refId": "A"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_COMDML_com_insert{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 平均每秒insert语句执行次数",
+            "refId": "B"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_COMDML_com_insert_select{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 平均每秒insert_select语句执行次数",
+            "refId": "C"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_COMDML_com_replace{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 平均每秒replace语句执行次数",
+            "refId": "D"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_COMDML_com_replace_select{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 平均每秒replace_select语句执行次数",
+            "refId": "E"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_COMDML_com_select{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 平均每秒select语句执行次数",
+            "refId": "F"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_COMDML_com_update{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 平均每秒update语句执行次数",
+            "refId": "G"
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "MySQL_COMDML",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "fill": 1,
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 12,
+          "y": 24
+        },
+        "id": 25,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {},
+        "percentage": false,
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "expr": "aliyun_rds_performance_MySQL_RowDML_Inno_log_writes{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 平均每秒向日志文件的物理写次数",
+            "refId": "A"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_RowDML_inno_row_delete{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 平均每秒从InnoDB表删除的行数",
+            "refId": "B"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_RowDML_inno_row_insert{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 平均每秒从InnoDB表插入的行数",
+            "refId": "C"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_RowDML_inno_row_readed{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 平均每秒从InnoDB表读取的行数",
+            "refId": "D"
+          },
+          {
+            "expr": "aliyun_rds_performance_MySQL_RowDML_inno_row_update{instanceId=~\"$DBInstanceId\"}",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "{{ instanceId }} 平均每秒从InnoDB表更新的行数",
+            "refId": "E"
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "MySQL_RowDML",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": "0",
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      }
+    ],
+    "refresh": false,
+    "schemaVersion": 18,
+    "style": "dark",
+    "tags": [
+      "aliyun-rds-exporter"
+    ],
+    "templating": {
+      "list": [
+        {
+          "allValue": null,
+          "current": {
+            "tags": [],
+            "text": "All",
+            "value": "$__all"
+          },
+          "datasource": "Prometheus",
+          "definition": "label_values(aliyun_rds_status, DBInstanceId)",
+          "hide": 0,
+          "includeAll": true,
+          "label": null,
+          "multi": false,
+          "name": "DBInstanceId",
+          "options": [
+            {
+              "selected": true,
+              "text": "All",
+              "value": "$__all"
+            }
+          ],
+          "query": "label_values(aliyun_rds_status, DBInstanceId)",
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tags": [],
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        }
+      ]
+    },
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {
+      "nowDelay": "30m",
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "time_options": [
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ]
+    },
+    "timezone": "",
+    "title": "阿里云 RDS Exporter 私人定制版",
+    "uid": null,
+    "version": 1
+  }

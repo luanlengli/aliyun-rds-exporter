@@ -188,20 +188,20 @@ class AliyunRDSCollector(object):
         for i in range(len(rds_instance_list)):
             rds_status = rds_instance_list[i]
             rds_status_keys = [
-                "LockMode",
-                "Engine",
-                "ExpireTime",
                 "CreateTime",
-                "DBInstanceType",
-                "RegionId",
-                "EngineVersion",
-                "DBInstanceStatus",
-                "PayType",
-                "DBInstanceId",
                 "DBInstanceDescription",
+                "DBInstanceId",
+                "DBInstanceStatus",
+                "DBInstanceType",
+                "Engine",
+                "EngineVersion",
+                "ExpireTime",
+                "LockMode",
+                "PayType",
+                "RegionId",
             ]
-            if rds_status["DBInstanceStatus"] != "Running":
-                continue
+            # if rds_status["DBInstanceStatus"] != "Running":
+            #     continue
             gauge = GaugeMetricFamily(
                 name="aliyun_rds_status",
                 documentation='',
@@ -209,17 +209,17 @@ class AliyunRDSCollector(object):
             )
             gauge.add_metric(
                 [
-                    rds_status["LockMode"],
-                    rds_status["Engine"],
-                    rds_status["ExpireTime"],
                     rds_status["CreateTime"],
-                    rds_status["DBInstanceType"],
-                    rds_status["RegionId"],
-                    rds_status["EngineVersion"],
-                    rds_status["DBInstanceStatus"],
-                    rds_status["PayType"],
-                    rds_status["DBInstanceId"],
                     rds_status["DBInstanceDescription"],
+                    rds_status["DBInstanceId"],
+                    rds_status["DBInstanceStatus"],
+                    rds_status["DBInstanceType"],
+                    rds_status["Engine"],
+                    rds_status["EngineVersion"],
+                    rds_status["ExpireTime"],
+                    rds_status["LockMode"],
+                    rds_status["PayType"],
+                    rds_status["RegionId"],
                 ],
                 value=1
             )
