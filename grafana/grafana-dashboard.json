@@ -825,7 +825,7 @@
         },
         "yaxes": [
           {
-            "format": "KBs",
+            "format": "deckbytes",
             "label": null,
             "logBase": 1,
             "max": null,
@@ -1259,7 +1259,7 @@
       ]
     },
     "timezone": "",
-    "title": "阿里云 RDS Exporter 私人定制版",
+    "title": "阿里云 RDS Exporter Dashboard",
     "uid": null,
     "version": 1
   }
