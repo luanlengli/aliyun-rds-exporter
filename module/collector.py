@@ -12,7 +12,8 @@ from aliyunsdkcore.client import AcsClient
 from aliyunsdkrds.request.v20140815.DescribeDBInstancesRequest import DescribeDBInstancesRequest
 from aliyunsdkrds.request.v20140815.DescribeDBInstancePerformanceRequest import DescribeDBInstancePerformanceRequest
 from aliyunsdkrds.request.v20140815.DescribeResourceUsageRequest import DescribeResourceUsageRequest
-from prometheus_client.core import Summary, GaugeMetricFamily
+from prometheus_client.core import Summary, GaugeMetricFamily, InfoMetricFamily
+from prometheus_client import Counter, Info
 
 
 
@@ -28,7 +29,11 @@ api_request_failed_summry = Summary(
     'CloudMonitor failed request latency',
     ['api']
 )
-
+# 记录阿里云API调用次数
+api_request_count = Counter(
+    'aliyun_api_request_counter',
+    'Aliyun API request counter',
+)
 
 class CollectorConfig(object):
     def __init__(self, file_opts, command_args, page_size=20, rate_limit=10, ):
@@ -76,11 +81,13 @@ class AliyunRDSCollector(object):
                 api_request_summry.labels(api='DescribeDBInstancesRequest').observe(
                     amount=(datetime.datetime.now().timestamp() - now)
                 )
+                api_request_count.inc()
             except Exception as e:
                 logging.error('Error request Aliyun api', exc_info=e)
                 api_request_failed_summry.labels(api='DescribeDBInstancesRequest').observe(
                     amount=(datetime.datetime.now().timestamp() - now)
                 )
+                api_request_count.inc()
                 return []
             if response['PageRecordCount'] == 0:
                 break
@@ -90,16 +97,9 @@ class AliyunRDSCollector(object):
         logging.debug("size of rds_instance_list = {}".format(sys.getsizeof(rds_instance_list)))
         return rds_instance_list
 
-    @cached(cache=TTLCache(maxsize=4096, ttl=20))
+    @cached(cache=TTLCache(maxsize=4096, ttl=40))
     def query_rds_performance_data_list(self):
     # 调用阿里云API请求RDS实例的性能数据
-        now = datetime.datetime.now()
-        rds_performance_data_list = list(self.aliyun_client_do_action_response_list())
-        logging.debug("rds_performance_data_list used time = {}".format(datetime.datetime.now() - now))
-        logging.debug("size of rds_performance_data_list = {}".format(sys.getsizeof(rds_performance_data_list)))
-        return rds_performance_data_list
-
-    def query_rds_performance_data_job_list_generator(self):
         rds_instance_list = self.query_rds_instance_list()
         now = datetime.datetime.utcnow()
         starttime = (now - datetime.timedelta(minutes=1)).strftime('%Y-%m-%dT%H:%MZ')
@@ -119,7 +119,24 @@ class AliyunRDSCollector(object):
                 request.set_EndTime(endtime)
                 request.set_Key(performance_key)
                 request_task_list.append(request)
-        return request_task_list
+        with futures.ThreadPoolExecutor(50) as executor:
+            response = executor.map(self.aliyun_client_do_action, request_task_list)
+        rds_performance_data_list = list(response)
+        return rds_performance_data_list
+
+    @cached(cache=TTLCache(maxsize=1024, ttl=60))
+    def query_rds_resource_usage_list(self):
+        rds_instance_list = self.query_rds_instance_list()
+        request_task_list = []
+        for i in range(len(rds_instance_list)):
+            request = DescribeResourceUsageRequest()
+            DBInstanceId = rds_instance_list[i]['DBInstanceId']
+            request.set_DBInstanceId(DBInstanceId=DBInstanceId)
+            request_task_list.append(request)
+        with futures.ThreadPoolExecutor(50) as executor:
+            response = executor.map(self.aliyun_client_do_action, request_task_list)
+        rds_resource_usage_list = list(response)
+        return rds_resource_usage_list
 
     def aliyun_client_do_action(self, request):
         now = datetime.datetime.now().timestamp()
@@ -128,41 +145,27 @@ class AliyunRDSCollector(object):
             api_request_summry.labels(api='DescribeDBInstancePerformanceRequest').observe(
                 amount=(datetime.datetime.now().timestamp() - now)
             )
+            api_request_count.inc()
             return response
         except Exception as e:
             logging.error('Error request Aliyun api', exc_info=e)
             api_request_failed_summry.labels(api='DescribeDBInstancePerformanceRequest').observe(
-                amount=(datetime.datetime.now().timestamp() - now.timestamp())
+                amount=(datetime.datetime.now().timestamp() - now)
             )
+            api_request_count.inc()
             return []
-
-    def aliyun_client_do_action_response_list(self):
-    # 通过线程池并行调用阿里云API
-        request_list = self.query_rds_performance_data_job_list_generator()
-        with futures.ThreadPoolExecutor(50) as executor:
-            response = executor.map(self.aliyun_client_do_action, request_list)
-        return response
-
-    @cached(cache=TTLCache(maxsize=1024, ttl=60))
-    def query_rds_resource_usage_list(self):
-        rds_instance_list = self.query_rds_instance_list()
-        request = DescribeResourceUsageRequest()
-        rds_resource_usage_dict = {}
-        for i in range(len(rds_instance_list)):
-            DBInstanceId = rds_instance_list[i]['DBInstanceId']
-            request.set_DBInstanceId(DBInstanceId=DBInstanceId)
-            response = json.loads(self.client.do_action_with_exception(request).decode('utf-8'))
-            rds_resource_usage_dict[DBInstanceId] = response
-        return rds_resource_usage_dict
 
     def generate_rds_performance_metrics(self):
         now = datetime.datetime.now()
         rds_performance_data_list = self.query_rds_performance_data_list()
         logging.debug("rds_performance_data_list used time = {}".format(datetime.datetime.now() - now))
         for i in range(len(rds_performance_data_list)):
+            if len(rds_performance_data_list[i]) == 0:
+                continue
             rds_performance_data = json.loads(rds_performance_data_list[i].decode("utf-8"))
             DBInstanceId = rds_performance_data["DBInstanceId"]
             PerformanceKey = rds_performance_data['PerformanceKeys']['PerformanceKey']
+            logging.debug("PerformanceKey = {}".format(PerformanceKey))
             if len(PerformanceKey) == 0:
                 continue
             PerformanceKey = PerformanceKey[0]
@@ -187,6 +190,7 @@ class AliyunRDSCollector(object):
         rds_instance_list = self.query_rds_instance_list()
         for i in range(len(rds_instance_list)):
             rds_status = rds_instance_list[i]
+            # logging.info("rds_status = {}".format(rds_status))
             rds_status_keys = [
                 "CreateTime",
                 "DBInstanceDescription",
@@ -226,12 +230,15 @@ class AliyunRDSCollector(object):
             yield gauge
 
     def generator_rds_resource_usage_metrics(self):
-        rds_instance_list = self.query_rds_instance_list()
-        rds_resource_usage_dict = self.query_rds_resource_usage_list()
-        for i in range(len(rds_instance_list)):
-            DBInstanceId = rds_instance_list[i]['DBInstanceId']
-            rds_resource_usage = rds_resource_usage_dict[DBInstanceId]
-            Engine = rds_resource_usage['Engine']
+        now = datetime.datetime.now()
+        rds_resource_usage_list = self.query_rds_resource_usage_list()
+        logging.debug("query_rds_resource_usage_list used time = {}".format(datetime.datetime.now() - now))
+        for i in range(len(rds_resource_usage_list)):
+            if len(rds_resource_usage_list[i]) == 0:
+                continue
+            rds_resource_usage = json.loads(rds_resource_usage_list[i].decode("utf-8"))
+            DBInstanceId = rds_resource_usage["DBInstanceId"]
+            Engine = rds_resource_usage["Engine"]
             for k, v in rds_resource_usage.items():
                 if k == 'Engine' or k == 'RequestId' or k == 'DBInstanceId':
                     continue

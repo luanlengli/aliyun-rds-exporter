@@ -20,7 +20,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: aliyun-rds-exporter
-        image: aliyun-rds-exporter:v0.0.1
+        image: luanlengli/aliyun-rds-exporter:v0.0.2
         imagePullPolicy: IfNotPresent
         command:
         - "python"
@@ -34,10 +34,10 @@ spec:
             path: /metrics
             port: 5234
             scheme: HTTP
-          initialDelaySeconds: 60
+          initialDelaySeconds: 10
           periodSeconds: 10
           successThreshold: 1
-          timeoutSeconds: 5
+          timeoutSeconds: 1
         ports:
         - name: http
           containerPort: 5234

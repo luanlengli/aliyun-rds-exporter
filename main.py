@@ -24,7 +24,6 @@ def main():
     collector_opts = CollectorConfig(file_opts=file_opts, command_args=command_args)
     # 实例化AliyunRDSCollector
     aliyun_rds_collector = AliyunRDSCollector(config=collector_opts)
-    # aliyun_rds_collector.query_rds_instance_list()
     # 注册到Prometheus的registry里面
     REGISTRY.register(aliyun_rds_collector)
     app = make_wsgi_app()
