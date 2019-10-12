@@ -57,7 +57,7 @@ docker run -d \
            --restart=on-failure:5 \
            -p 5234:5234 \
            -v config/config.yaml:/opt/aliyun-rds-exporter/config/config.yaml \
-           ${IMAGE_NAME}:${TAG}
+           luanlengli/aliyun-rds-exporter:v0.0.2
 ```
 
 - Qurey metrics data
