@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.7-alpine
 WORKDIR /opt/aliyun-rds-exporter
 ADD . /opt/aliyun-rds-exporter
 RUN \
