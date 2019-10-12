@@ -48,19 +48,17 @@ performance_list:
   - 'MySQL_QPSTPS'
 ```
 
-# Quick Start
-
-- Run exporter in container
+# Run exporter in container
 
 ```shell
 docker run -d \
            --restart=on-failure:5 \
            -p 5234:5234 \
            -v config/config.yaml:/opt/aliyun-rds-exporter/config/config.yaml \
-           luanlengli/aliyun-rds-exporter:v0.0.2
+           ${IMAGE_NAME}:${TAG}
 ```
 
-- Qurey metrics data
+# Qurey metrics data
 
 ```shell
 curl http://localhost:5234/metrics
@@ -142,6 +140,25 @@ aliyun_rds_status{CreateTime="2019-01-01T08:00:00Z",DBInstanceId="rm-xxxxxxxxxxx
       access_key_id: "<Aliyun Access Key ID>"
       access_key_secret: "<Aliyun Access Key Secret>"
       region_id: "<Aliyun Region>"
+```
+
+- edit`kubernetes/aliyun-rds-exporter-deployment.yaml`
+- config your image
+
+```yaml
+...
+spec:
+  ...
+  template:
+	...
+    spec:
+      ...
+      containers:
+      ...
+      - name: aliyun-rds-exporter
+        image: ${IMAGE_NAME}:${TAG}
+        imagePullPolicy: IfNotPresent
+      ...
 ```
 
 ## deploy
