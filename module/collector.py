@@ -177,7 +177,7 @@ class AliyunRDSCollector(object):
                 logging.warning("{}:{}:{}".format(DBInstanceId, Key.replace('-', '_'), PerformanceKey["Values"]["PerformanceValue"]))
                 continue
             Value = PerformanceKey["Values"]["PerformanceValue"][-1]["Value"].split("&")
-            Date = PerformanceKey["Values"]["PerformanceValue"][-1]["Date"]
+            # Date = PerformanceKey["Values"]["PerformanceValue"][-1]["Date"]
             ValueFormat = PerformanceKey["ValueFormat"].split("&")
             for k, v in zip(ValueFormat, Value):
                 name = "{}_{}_{}".format("aliyun_rds_performance", Key, k).replace('-', '_')
@@ -185,10 +185,10 @@ class AliyunRDSCollector(object):
                 gauge = GaugeMetricFamily(
                     name=name,
                     documentation='',
-                    labels=["instanceId", "Unit", "Date",]
+                    labels=["instanceId", "Unit",]
                 )
                 gauge.add_metric(
-                    labels=[DBInstanceId, Unit, Date,],
+                    labels=[DBInstanceId, Unit,],
                     value=v,
                 )
                 yield gauge
