@@ -102,7 +102,7 @@ class AliyunRDSCollector(object):
     # 调用阿里云API请求RDS实例的性能数据
         rds_instance_list = self.query_rds_instance_list()
         now = datetime.datetime.utcnow()
-        starttime = (now - datetime.timedelta(minutes=1)).strftime('%Y-%m-%dT%H:%MZ')
+        starttime = (now - datetime.timedelta(minutes=3)).strftime('%Y-%m-%dT%H:%MZ')
         endtime = now.strftime('%Y-%m-%dT%H:%MZ')
         performance_lists = self.config.performance_list
         request_task_list = []
@@ -167,26 +167,28 @@ class AliyunRDSCollector(object):
             rds_performance_data = json.loads(rds_performance_data_list[i].decode("utf-8"))
             logging.debug("rds_performance_data = {}".format(rds_performance_data))
             DBInstanceId = rds_performance_data["DBInstanceId"]
-            PerformanceKey = rds_performance_data['PerformanceKeys']['PerformanceKey']
-            if len(PerformanceKey) == 0:
+            if len(rds_performance_data['PerformanceKeys']['PerformanceKey']) == 0:
                 continue
-            PerformanceKey = PerformanceKey[0]
+            PerformanceKey = rds_performance_data['PerformanceKeys']['PerformanceKey'][0]
             Key = PerformanceKey["Key"]
             Unit = PerformanceKey["Unit"]
+            # logging.error("PerformanceKey = {}".format(rds_performance_data['PerformanceKeys']['PerformanceKey']))
             if len(PerformanceKey["Values"]["PerformanceValue"]) == 0:
                 logging.warning("{}:{}:{}".format(DBInstanceId, Key.replace('-', '_'), PerformanceKey["Values"]["PerformanceValue"]))
                 continue
-            Value = PerformanceKey["Values"]["PerformanceValue"][0]["Value"].split("&")
+            Value = PerformanceKey["Values"]["PerformanceValue"][-1]["Value"].split("&")
+            Date = PerformanceKey["Values"]["PerformanceValue"][-1]["Date"]
             ValueFormat = PerformanceKey["ValueFormat"].split("&")
             for k, v in zip(ValueFormat, Value):
                 name = "{}_{}_{}".format("aliyun_rds_performance", Key, k).replace('-', '_')
+                logging.debug("{} = {}".format(name, v))
                 gauge = GaugeMetricFamily(
                     name=name,
                     documentation='',
-                    labels=["instanceId", "Unit",]
+                    labels=["instanceId", "Unit", "Date",]
                 )
                 gauge.add_metric(
-                    labels=[DBInstanceId, Unit],
+                    labels=[DBInstanceId, Unit, Date,],
                     value=v,
                 )
                 yield gauge
