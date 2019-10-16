@@ -162,20 +162,19 @@ class AliyunRDSCollector(object):
         logging.debug("rds_performance_data_list used time = {}".format(datetime.datetime.now() - now))
         for i in range(len(rds_performance_data_list)):
             if len(rds_performance_data_list[i]) == 0:
-                logging.debug("rds_performance_data_list[{}] == []".format(i))
+                logging.warning("rds_performance_data_list[{}] == []".format(i))
                 continue
             rds_performance_data = json.loads(rds_performance_data_list[i].decode("utf-8"))
             logging.debug("rds_performance_data = {}".format(rds_performance_data))
             DBInstanceId = rds_performance_data["DBInstanceId"]
             PerformanceKey = rds_performance_data['PerformanceKeys']['PerformanceKey']
             if len(PerformanceKey) == 0:
-                logging.debug("{}:rds_performance_data:{}".format(DBInstanceId, rds_performance_data))
                 continue
             PerformanceKey = PerformanceKey[0]
             Key = PerformanceKey["Key"]
             Unit = PerformanceKey["Unit"]
             if len(PerformanceKey["Values"]["PerformanceValue"]) == 0:
-                logging.debug("{}:{}:{}".format(DBInstanceId, Key.replace('-', '_'), PerformanceKey["Values"]["PerformanceValue"]))
+                logging.warning("{}:{}:{}".format(DBInstanceId, Key.replace('-', '_'), PerformanceKey["Values"]["PerformanceValue"]))
                 continue
             Value = PerformanceKey["Values"]["PerformanceValue"][0]["Value"].split("&")
             ValueFormat = PerformanceKey["ValueFormat"].split("&")
