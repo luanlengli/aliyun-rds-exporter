@@ -20,8 +20,8 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: aliyun-rds-exporter
-        image: luanlengli/aliyun-rds-exporter:v0.0.2
-        imagePullPolicy: IfNotPresent
+        image: luanlengli/aliyun-rds-exporter:v0.0.1
+        imagePullPolicy: Always
         command:
         - "python"
         - "main.py"
