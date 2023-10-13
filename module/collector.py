@@ -12,6 +12,7 @@ from aliyunsdkcore.client import AcsClient
 from aliyunsdkrds.request.v20140815.DescribeDBInstancesRequest import DescribeDBInstancesRequest
 from aliyunsdkrds.request.v20140815.DescribeDBInstancePerformanceRequest import DescribeDBInstancePerformanceRequest
 from aliyunsdkrds.request.v20140815.DescribeResourceUsageRequest import DescribeResourceUsageRequest
+from aliyunsdkrds.request.v20140815.DescribeDBInstanceAttributeRequest import DescribeDBInstanceAttributeRequest
 from prometheus_client.core import Summary, GaugeMetricFamily, InfoMetricFamily
 from prometheus_client import Counter, Info
 
@@ -124,6 +125,22 @@ class AliyunRDSCollector(object):
         rds_performance_data_list = list(response)
         return rds_performance_data_list
 
+    @cached(cache=TTLCache(maxsize=4096, ttl=50))
+    def query_rds_instance_detail_list(self):
+        # 调用阿里云API请求RDS实例的详情
+        rds_instance_list = self.query_rds_instance_list()
+        request_task_list = []
+        for i in range(len(rds_instance_list)):
+            DBInstanceId = rds_instance_list[i]['DBInstanceId']
+            request = DescribeDBInstanceAttributeRequest()
+            request.set_DBInstanceId(DBInstanceId)
+            request.set_accept_format('json')
+            request_task_list.append(request)
+        with futures.ThreadPoolExecutor(50) as executor:
+            response = executor.map(self.aliyun_client_do_action, request_task_list)
+        rds_instance_detail_list = list(response)
+        return rds_instance_detail_list
+
     @cached(cache=TTLCache(maxsize=1024, ttl=60))
     def query_rds_resource_usage_list(self):
         rds_instance_list = self.query_rds_instance_list()
@@ -204,7 +221,8 @@ class AliyunRDSCollector(object):
             rds_status_keys = [
                 "CreateTime",
                 "DBInstanceDescription",
-                "DBInstanceId",
+                #"DBInstanceId",
+                "instanceId",
                 "DBInstanceStatus",
                 "DBInstanceType",
                 "Engine",
@@ -234,6 +252,34 @@ class AliyunRDSCollector(object):
                     rds_status["LockMode"],
                     rds_status["PayType"],
                     rds_status["RegionId"],
+                ],
+                value=1
+            )
+            yield gauge
+
+    def generate_rds_detail_metrics(self):
+        rds_instance_detail_list = self.query_rds_instance_detail_list()
+        for i in range(len(rds_instance_detail_list)):
+            rds_detail = json.loads(rds_instance_detail_list[i].decode("utf-8"))["Items"]["DBInstanceAttribute"][0]
+            # logging.info("rds_detail = {}".format(rds_detail))
+            if len(rds_detail) == 0:
+                logging.warning("rds_detail == {}".format(rds_detail))
+                continue
+            rds_detail_keys = [
+                "DBInstanceMemory",
+                "instanceId",
+                "DBInstanceCPU"
+            ]
+            gauge = GaugeMetricFamily(
+                name="aliyun_rds_detail",
+                documentation='',
+                labels=rds_detail_keys,
+            )
+            gauge.add_metric(
+                [
+                    str(int(rds_detail["DBInstanceMemory"] * 1024 * 1024)),
+                    rds_detail["DBInstanceId"],
+                    rds_detail["DBInstanceCPU"],
                 ],
                 value=1
             )
@@ -270,3 +316,4 @@ class AliyunRDSCollector(object):
         yield from self.generate_rds_performance_metrics()
         yield from self.generator_rds_resource_usage_metrics()
         yield from self.generate_rds_status_metrics()
+        yield from self.generate_rds_detail_metrics()
